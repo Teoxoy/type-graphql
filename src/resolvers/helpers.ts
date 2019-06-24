@@ -13,6 +13,7 @@ export async function getParams(
   params: ParamMetadata[],
   resolverData: ResolverData<any>,
   globalValidate: boolean | ValidatorOptions,
+  validateOrRejectFn: (object: Object, validatorOptions?: ValidatorOptions) => Promise<void>,
   pubSub: PubSubEngine,
 ): Promise<any[]> {
   return Promise.all(
@@ -24,12 +25,14 @@ export async function getParams(
             return await validateArg(
               convertToType(paramInfo.getType(), resolverData.args),
               globalValidate,
+              validateOrRejectFn,
               paramInfo.validate,
             );
           case "arg":
             return await validateArg(
               convertToType(paramInfo.getType(), resolverData.args[paramInfo.name]),
               globalValidate,
+              validateOrRejectFn,
               paramInfo.validate,
             );
           case "context":

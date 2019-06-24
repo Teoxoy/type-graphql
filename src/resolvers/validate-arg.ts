@@ -5,6 +5,7 @@ import { ArgumentValidationError } from "../errors/ArgumentValidationError";
 export async function validateArg<T extends Object>(
   arg: T | undefined,
   globalValidate: boolean | ValidatorOptions,
+  validateOrRejectFn: (object: T, validatorOptions?: ValidatorOptions) => Promise<void>,
   argValidate?: boolean | ValidatorOptions,
 ): Promise<T | undefined> {
   const validate = argValidate !== undefined ? argValidate : globalValidate;
@@ -21,9 +22,8 @@ export async function validateArg<T extends Object>(
     validatorOptions.skipMissingProperties = true;
   }
 
-  const { validateOrReject } = await import("class-validator");
   try {
-    await validateOrReject(arg, validatorOptions);
+    await validateOrRejectFn(arg, validatorOptions);
     return arg;
   } catch (err) {
     throw new ArgumentValidationError(err);

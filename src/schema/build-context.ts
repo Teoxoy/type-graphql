@@ -21,6 +21,7 @@ export interface BuildContextOptions {
    * You can also directly pass validator options to enable validator with a given options.
    */
   validate?: boolean | ValidatorOptions;
+  validateOrRejectFn?: (object: Object, validatorOptions?: ValidatorOptions) => Promise<void>;
   authChecker?: AuthChecker<any, any>;
   authMode?: AuthMode;
   pubSub?: PubSubEngine | PubSubOptions;
@@ -36,6 +37,7 @@ export abstract class BuildContext {
   static dateScalarMode: DateScalarMode;
   static scalarsMaps: ScalarsTypeMap[];
   static validate: boolean | ValidatorOptions;
+  static validateOrRejectFn: (object: Object, validatorOptions?: ValidatorOptions) => Promise<void>;
   static authChecker?: AuthChecker<any, any>;
   static authMode: AuthMode;
   static pubSub: PubSubEngine;
@@ -57,6 +59,12 @@ export abstract class BuildContext {
 
     if (options.validate !== undefined) {
       this.validate = options.validate;
+    }
+
+    if (options.validateOrRejectFn !== undefined) {
+      this.validateOrRejectFn = options.validateOrRejectFn;
+    } else {
+      this.validate = false;
     }
 
     if (options.authChecker !== undefined) {

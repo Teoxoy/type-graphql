@@ -15,6 +15,7 @@ export function createHandlerResolver(
 ): GraphQLFieldResolver<any, any, any> {
   const {
     validate: globalValidate,
+    validateOrRejectFn,
     authChecker,
     authMode,
     pubSub,
@@ -32,6 +33,7 @@ export function createHandlerResolver(
         resolverMetadata.params!,
         resolverData,
         globalValidate,
+        validateOrRejectFn,
         pubSub,
       );
       return targetInstance[resolverMetadata.methodName].apply(targetInstance, params);
@@ -49,6 +51,7 @@ export function createAdvancedFieldResolver(
   const targetType = fieldResolverMetadata.getObjectType!();
   const {
     validate: globalValidate,
+    validateOrRejectFn,
     authChecker,
     authMode,
     pubSub,
@@ -69,6 +72,7 @@ export function createAdvancedFieldResolver(
           fieldResolverMetadata.params!,
           resolverData,
           globalValidate,
+          validateOrRejectFn,
           pubSub,
         );
         return handlerOrGetterValue.apply(targetInstance, params);
